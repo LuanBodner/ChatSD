@@ -32,7 +32,6 @@ int main(int argc, char** argv) {
 
     sendto(socket_id, "msg", 3, 0, (struct sockaddr*) &group_socket, sizeof (group_socket));
 
-
     return (EXIT_SUCCESS);
 }
 
