@@ -1,0 +1,2 @@
+rm -vf vectoradd.exe
+gmake: *** No rule to make target 'vectoradd.c', needed by 'vectoradd.exe'.  Stop.
