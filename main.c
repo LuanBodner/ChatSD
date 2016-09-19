@@ -39,19 +39,16 @@ void * send_multicast_message(void * ptr) {
 
     SocketMessage * sm = (SocketMessage*) ptr;
 
-    while (strcmp(sm->message, "exit")) {
-        if (!sendto(sm->socket_struct.socket_id, sm->message,
-                sizeof (sm->message), 0, (struct sockaddr *) &sm->socket_struct.socket,
-                sm->socket_struct.address_length)) {
+    sm->socket_struct.socket.sin_addr.s_addr = inet_addr(IP_ADDRESS);
 
-            fprintf(stdout, "Error Sending Message\n");
-            exit(EXIT_FAILURE);
-        } else
-            fprintf(stdout, "Message Sent\n");
+    if (!sendto(sm->socket_struct.socket_id, sm->message,
+            sizeof (sm->message), 0, (struct sockaddr *) &sm->socket_struct.socket,
+            sm->socket_struct.address_length)) {
 
-        printf("> ");
-        scanf("%s", &sm->message);
-    }
+        fprintf(stdout, "Error Sending Message\n");
+        exit(EXIT_FAILURE);
+    } else
+        fprintf(stdout, "Message Sent\n");
 }
 
 void * receive_multicast_message(void * ptr) {
@@ -70,23 +67,26 @@ void * receive_multicast_message(void * ptr) {
     receive_message.imr_multiaddr.s_addr = inet_addr(IP_ADDRESS);
     receive_message.imr_interface.s_addr = htonl(INADDR_ANY);
 
-    if (setsockopt(s->socket_id, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-            &receive_message, sizeof (receive_message)) < 0) {
+    if (!setsockopt(s->socket_id, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+            &receive_message, sizeof (receive_message))) {
 
         fprintf(stdout, "Set Socket Error\n");
         exit(EXIT_FAILURE);
     }
 
     while (1) {
-        printf("Rodando\n");
-        if (recvfrom(s->socket_id, message, sizeof (message), 0,
-                (struct sockaddr *) s, &s->address_length) < 0) {
+
+        if (!recvfrom(s->socket_id, message, sizeof (message), 0,
+                (struct sockaddr *) s, &s->address_length)) {
 
             fprintf(stdout, "Invalid Message\n");
             exit(EXIT_FAILURE);
         }
 
         printf("%s: message = \"%s\"\n", inet_ntoa(s->socket.sin_addr), message);
+
+        if (strcmp(message, "exit"))
+            break;
     }
 
     pthread_exit(0);
@@ -105,6 +105,7 @@ int main(int argc, char** argv) {
     initialize_multicast_socket(&group_socket);
     initialize_multicast_socket(&socket_receive);
 
+
     pthread_t * threads = malloc(2 * sizeof (pthread_t));
 
     scanf("%s", command_string);
@@ -116,7 +117,7 @@ int main(int argc, char** argv) {
     pthread_create(&threads[0], NULL, send_multicast_message,
             (void*) &sm);
     pthread_create(&threads[1], NULL, receive_multicast_message,
-            (void*) &socket_receive);
+            (void*) &group_socket);
 
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
