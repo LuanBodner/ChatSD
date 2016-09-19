@@ -31,7 +31,7 @@
 #define MULTICAST_PORT 6789 /* re-define with the default value */
 #endif
 
-#define STRING_SIZE 509 /* max string size C89 */
+#define MAX_STRING_SIZE 509 /* max string size C89 */
 #define CLEAR_SCREEN system("clear") /* clear screen directive */
 
 #endif /* MACROS_H */

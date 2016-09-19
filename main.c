@@ -3,9 +3,11 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "macros.h"
 
 typedef struct {
@@ -16,7 +18,7 @@ typedef struct {
 
 typedef struct {
     SocketIn socket_struct;
-    char message[509];
+    char message[MAX_STRING_SIZE];
 } SocketMessage;
 
 void initialize_multicast_socket(SocketIn * s) {
@@ -47,15 +49,17 @@ void * send_multicast_message(void * ptr) {
 
         fprintf(stdout, "Error Sending Message\n");
         exit(EXIT_FAILURE);
-    } else
-        fprintf(stdout, "Message Sent\n");
+    } else {
+        fprintf(stdout, "Sending... %ld\n", (long int) pthread_self());
+        sleep(5);
+    }
 }
 
 void * receive_multicast_message(void * ptr) {
 
     SocketIn * s = (SocketIn*) ptr;
     struct ip_mreq receive_message;
-    char message[509];
+    char message[MAX_STRING_SIZE];
 
     if (!bind(s->socket_id, (struct sockaddr *) &s->socket,
             sizeof (s->socket))) {
@@ -75,6 +79,9 @@ void * receive_multicast_message(void * ptr) {
     }
 
     while (1) {
+
+        fprintf(stdout, "Receiving... %d\n", (int) pthread_self());
+        sleep(5);
 
         if (!recvfrom(s->socket_id, message, sizeof (message), 0,
                 (struct sockaddr *) s, &s->address_length)) {
@@ -96,7 +103,7 @@ int main(int argc, char** argv) {
 
     CLEAR_SCREEN;
 
-    char command_string[STRING_SIZE];
+    char command_string[MAX_STRING_SIZE];
     int thread_ctrl;
 
     SocketIn group_socket;
