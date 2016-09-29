@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Scanner;
 import util.Utils;
 
@@ -26,6 +27,7 @@ public class ChatSD {
 
             //inicializa a lista de usuários conectados
             Utils.CONNECTED = new ArrayList();
+            Utils.USERS = new Hashtable<String, String>();
 
             //lê o apelido do usuário
             System.out.print("Set Nickname: ");
@@ -34,8 +36,9 @@ public class ChatSD {
             Utils.NICKNAME = sc.next();
 
             //inicializa as threads de escuta e envio de mensagens
-            Listener ml = new Listener(s, group);
+            MulticastListener ml = new MulticastListener(s, group);
             Sender ms = new Sender(s, group);
+            DatagramListener dl = new DatagramListener();
 
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
