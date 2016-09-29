@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Utils {
 
@@ -14,4 +15,6 @@ public class Utils {
     public static String NICKNAME;
     //lista de usuários conectados
     public static ArrayList<String> CONNECTED;
+
+    public static Hashtable<String, String> USERS;
 }

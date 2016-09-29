@@ -1,26 +1,23 @@
 package chatsd;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.Utils;
 
-class Listener extends Thread {
+class MulticastListener extends Thread {
 
     MulticastSocket multicastListener;
     byte[] buffer;
     DatagramPacket messageIn;
     InetAddress address;
 
-    public Listener(MulticastSocket multicastSocket, InetAddress address) {
+    public MulticastListener(MulticastSocket multicastSocket, InetAddress address) {
 
         // inicializa valores da classe
         multicastListener = multicastSocket;
@@ -47,7 +44,7 @@ class Listener extends Thread {
                 if (receivedMessage.contains("JOIN ")) {
 
                     //envia um JOINACK para o grupo
-                    String joinAck = new String("JOINACK [" + Utils.NICKNAME + "]");
+                    String joinAck = new String("JOINACK [" + Utils.NICKNAME + "] " + Inet4Address.getLocalHost().getHostAddress().toString());
 
                     buffer = joinAck.getBytes();
                     DatagramPacket messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);
@@ -59,8 +56,12 @@ class Listener extends Thread {
 
                     //adiciona o novo membro na lista de usuários conhecidos
                     if (!token[0].equals(Utils.NICKNAME)) {
+
                         Utils.CONNECTED.add(token[0]);
                     }
+
+                    Utils.USERS.put(token[0], token[1]);
+
                 } else if (receivedMessage.contains("JOINACK ")) {
 
                     //se chegou um joinack
@@ -71,6 +72,9 @@ class Listener extends Thread {
                     if (!token[0].equals(Utils.NICKNAME)) {
                         Utils.CONNECTED.add(token[0]);
                     }
+
+                    Utils.USERS.put(token[0], token[1]);
+
                     //printa a mensagem de joinack
                     System.out.println(receivedMessage);
 
@@ -78,20 +82,10 @@ class Listener extends Thread {
 
                     //se for uma mensagem simples, printa na tela
                     System.out.println(receivedMessage);
-                } else if (receivedMessage.contains("MSGIDV FROM ")) {
-
-                    //se for uma mensagem privada, faz um parse na string
-                    String[] token = receivedMessage.split("[' '\\[\\]]+");
-
-                    //verifica se é o usuário correto
-                    if (token[4].equals(Utils.NICKNAME)) {
-                        //printa a mensagem
-                        System.out.println(receivedMessage);
-                    }
                 }
 
             } catch (IOException ex) {
-                Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MulticastListener.class.getName()).log(Level.SEVERE, null, ex);
             }
         } while (true);
 
