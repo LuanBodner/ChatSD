@@ -1,19 +1,11 @@
 package chatsd;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.Utils;
 
 public class ChatSD {
@@ -32,13 +24,16 @@ public class ChatSD {
             // adiciona o host ao grupo 
             s.joinGroup(group);
 
+            //inicializa a lista de usuários conectados
             Utils.CONNECTED = new ArrayList();
 
+            //lê o apelido do usuário
             System.out.print("Set Nickname: ");
             Scanner sc = new Scanner(System.in);
 
             Utils.NICKNAME = sc.next();
 
+            //inicializa as threads de escuta e envio de mensagens
             MulticastListener ml = new MulticastListener(s, group);
             MulticastSender ms = new MulticastSender(s, group);
 
