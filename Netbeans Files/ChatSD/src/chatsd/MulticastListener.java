@@ -44,7 +44,7 @@ class MulticastListener extends Thread {
                 if (receivedMessage.contains("JOIN ")) {
 
                     //envia um JOINACK para o grupo
-                    String joinAck = new String("JOINACK [" + Utils.NICKNAME + "] " + Inet4Address.getLocalHost().getHostAddress().toString());
+                    String joinAck = new String("JOINACK [" + Utils.NICKNAME + "]");
 
                     buffer = joinAck.getBytes();
                     DatagramPacket messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);
@@ -82,6 +82,20 @@ class MulticastListener extends Thread {
 
                     //se for uma mensagem simples, printa na tela
                     System.out.println(receivedMessage);
+                } else if (receivedMessage.contains("MSGIDV FROM ")) {
+
+                    //se for uma mensagem privada, faz um parse na string
+                    String[] token = receivedMessage.split("[' '\\[\\]]+");
+
+                    //verifica se é o usuário correto
+                    if (token[4].equals(Utils.NICKNAME)) {
+                        //printa a mensagem
+                        System.out.println(receivedMessage);
+                    } else {
+                        System.out.println("Wrong User");
+                    }
+                } else {
+                    System.out.println("Wrong Protocol");
                 }
 
             } catch (IOException ex) {

@@ -59,38 +59,7 @@ class Sender extends Thread {
 
             buffer = message.getBytes();
 
-            //se for uma mensagem privada, envia para a porta padrão
-            if (message.contains("MSGIDV")) {
-
-                DatagramSocket socket = null;
-                try {
-                    socket = new DatagramSocket();
-                } catch (SocketException ex) {
-                    Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                String[] token = message.split("[' '\\[\\]]+");
-                InetAddress newAddress = null;
-                try {
-                    newAddress = InetAddress.getByName(Utils.USERS.get(token[4]));
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                System.out.println(token[2] + "," + token[4]);
-
-                DatagramPacket dp = new DatagramPacket(buffer, buffer.length,
-                        newAddress, Utils.PORTTOPRIVATEMESSAGES);
-
-                try {
-                    socket.send(dp);
-                } catch (IOException ex) {
-                    Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            } else {
-                messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);
-            }
+            messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);
 
             try {
                 multicastSender.send(messageOut);
