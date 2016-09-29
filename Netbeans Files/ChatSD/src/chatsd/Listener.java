@@ -13,14 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.Utils;
 
-class MulticastListener extends Thread {
+class Listener extends Thread {
 
     MulticastSocket multicastListener;
     byte[] buffer;
     DatagramPacket messageIn;
     InetAddress address;
 
-    public MulticastListener(MulticastSocket multicastSocket, InetAddress address) {
+    public Listener(MulticastSocket multicastSocket, InetAddress address) {
 
         // inicializa valores da classe
         multicastListener = multicastSocket;
@@ -91,7 +91,7 @@ class MulticastListener extends Thread {
                 }
 
             } catch (IOException ex) {
-                Logger.getLogger(MulticastListener.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
             }
         } while (true);
 

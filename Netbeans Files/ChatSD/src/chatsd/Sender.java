@@ -9,14 +9,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.Utils;
 
-class MulticastSender extends Thread {
+class Sender extends Thread {
 
     byte[] buffer;
     InetAddress address;
     DatagramPacket messageOut;
     MulticastSocket multicastSender;
 
-    public MulticastSender(MulticastSocket multicastSocket, InetAddress address) {
+    public Sender(MulticastSocket multicastSocket, InetAddress address) {
       
         //inicializa as variaveis da classe
         multicastSender = multicastSocket;
@@ -31,7 +31,7 @@ class MulticastSender extends Thread {
             //envia mensagem para o grupo que um novo user entrou
             multicastSender.send(messageOut);
         } catch (IOException ex) {
-            Logger.getLogger(MulticastSender.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //inicializa thread
@@ -65,7 +65,7 @@ class MulticastSender extends Thread {
             try {
                 multicastSender.send(messageOut);
             } catch (IOException ex) {
-                Logger.getLogger(MulticastSender.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
             }
         } while (true);
 

@@ -34,8 +34,8 @@ public class ChatSD {
             Utils.NICKNAME = sc.next();
 
             //inicializa as threads de escuta e envio de mensagens
-            MulticastListener ml = new MulticastListener(s, group);
-            MulticastSender ms = new MulticastSender(s, group);
+            Listener ml = new Listener(s, group);
+            Sender ms = new Sender(s, group);
 
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
