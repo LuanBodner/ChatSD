@@ -33,3 +33,7 @@ nbactions.xml
 
 #Especifico
 *.db
+
+#java:
+*.class
+*.jar

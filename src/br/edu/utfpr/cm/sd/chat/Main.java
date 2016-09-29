@@ -1,18 +1,47 @@
-package src.br.edu.utfpr.cm.sd.chat;
+package br.edu.utfpr.cm.sd.chat;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
+public class Main {
+
+    public static void main() throws IOException {
+
+        MulticastSocket s = null;
+        try {
+            // cria um grupo multicast 
+            InetAddress group = null;
+            group = InetAddress.getByName("235.1.2.3");
+
+            // cria um socket multicast 
+            s = new MulticastSocket(6789);
+
+            // adiciona o host ao grupo 
+            s.joinGroup(group);
+
+            MulticastListener ml = new MulticastListener(s);
+            MulticastSender ms = new MulticastSender(s, group);
+            ml.run();
+            ms.run();
+        } catch (SocketException e) {
+            System.out.println("Socket: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO: " + e.getMessage());
+        } finally {
+            if (s != null) {
+                s.close(); //fecha o socket
+            }
+        }
+    }
+}
 
 class MulticastListener extends Thread {
 
@@ -69,37 +98,5 @@ class MulticastSender extends Thread {
             }
         } while (buffer.equals("EXIT"));
 
-    }
-}
-
-public class Main {
-
-    public static void main() throws IOException {
-
-        MulticastSocket s = null;
-        try {
-            // cria um grupo multicast 
-            InetAddress group = null;
-            group = InetAddress.getByName("235.1.2.3");
-
-            // cria um socket multicast 
-            s = new MulticastSocket(6789);
-
-            // adiciona o host ao grupo 
-            s.joinGroup(group);
-
-            MulticastListener ml = new MulticastListener(s);
-            MulticastSender ms = new MulticastSender(s, group);
-            ml.run();
-            ms.run();
-        } catch (SocketException e) {
-            System.out.println("Socket: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
-        } finally {
-            if (s != null) {
-                s.close(); //fecha o socket
-            }
-        }
     }
 }
