@@ -20,6 +20,16 @@ class MulticastSender extends Thread {
         multicastSender = multicastSocket;
         buffer = new byte[1000];
         this.address = address;
+
+        String joinack = "JOIN [" + Utils.NICKNAME + "]";
+        buffer = joinack.getBytes();
+        messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);
+        try {
+            multicastSender.send(messageOut);
+        } catch (IOException ex) {
+            Logger.getLogger(MulticastSender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         this.start();
     }
 
@@ -28,11 +38,12 @@ class MulticastSender extends Thread {
         String message;
 
         do {
+
             Scanner sc = new Scanner(System.in);
 
             message = sc.nextLine();
 
-            if (message.contains("LEAVE [*]")) {
+            if (message.equals("LEAVE [" + Utils.NICKNAME + "]")) {
                 System.exit(0);
             }
 

@@ -10,6 +10,7 @@ import java.net.MulticastSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +31,17 @@ public class ChatSD {
 
             // adiciona o host ao grupo 
             s.joinGroup(group);
-            System.out.println("Initial command : JOIN [nickname]");
 
-            MulticastListener ml = new MulticastListener(s);
+            Utils.CONNECTED = new ArrayList();
+
+            System.out.print("Set Nickname: ");
+            Scanner sc = new Scanner(System.in);
+
+            Utils.NICKNAME = sc.next();
+
+            MulticastListener ml = new MulticastListener(s, group);
             MulticastSender ms = new MulticastSender(s, group);
+
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
