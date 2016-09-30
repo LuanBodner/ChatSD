@@ -1,5 +1,8 @@
 package chatsd;
 
+/*
+*   Implementação de um chat Multicast com suporte à mensagens para grupo e individuais
+ */
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
