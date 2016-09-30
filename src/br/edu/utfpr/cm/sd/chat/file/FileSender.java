@@ -11,6 +11,8 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import br.edu.utfpr.cm.sd.chat.util.Utils;
+
 public class FileSender implements Runnable {
     private String ownHost;
     private int ownPort;
@@ -19,7 +21,7 @@ public class FileSender implements Runnable {
     private ServerSocket serverSocket;
 
     public FileSender(String fileName) {
-        loadFile(fileName);
+        loadFile(Utils.SHAREDFOLDER + File.pathSeparator + fileName);
         createSocket();
     }
 
