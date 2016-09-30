@@ -1,5 +1,6 @@
 package chatsd;
 
+import file.FileSender;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -57,6 +58,11 @@ class Sender extends Thread {
                 System.exit(0);
             }
 
+            if (message.contains("DOWNFILE ")) {
+
+                //DO NOTHING
+                //Interface incompleta
+            }
             buffer = message.getBytes();
 
             messageOut = new DatagramPacket(buffer, buffer.length, address, Utils.PORTTOMULTICASTMESSAGES);

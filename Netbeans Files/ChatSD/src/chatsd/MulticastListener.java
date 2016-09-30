@@ -1,5 +1,6 @@
 package chatsd;
 
+import file.FileSender;
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -100,7 +101,7 @@ class MulticastListener extends Thread {
                     } else {
                         System.out.println("Wrong User");
                     }
-                } else {
+                }else {
                     System.out.println("Wrong Protocol");
                 }
 
