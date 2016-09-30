@@ -38,7 +38,6 @@ public class ChatSD {
             //inicializa as threads de escuta e envio de mensagens
             MulticastListener ml = new MulticastListener(s, group);
             Sender ms = new Sender(s, group);
-            DatagramListener dl = new DatagramListener();
 
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
