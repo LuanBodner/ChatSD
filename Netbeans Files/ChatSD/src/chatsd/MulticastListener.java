@@ -80,17 +80,23 @@ class MulticastListener extends Thread {
 
                 } else if (receivedMessage.contains("MSG ")) {
 
+                    //pega nome + msg
+                    String[] token = receivedMessage.split("[' ']+");
+                    String[] msg = receivedMessage.split("[\"\"]+");
+
                     //se for uma mensagem simples, printa na tela
-                    System.out.println(receivedMessage);
+                    System.err.println(token[1] + ": " + msg[1]);
+
                 } else if (receivedMessage.contains("MSGIDV FROM ")) {
 
                     //se for uma mensagem privada, faz um parse na string
                     String[] token = receivedMessage.split("[' '\\[\\]]+");
+                    String[] msg = receivedMessage.split("[\"\"]+");
 
                     //verifica se é o usuário correto
                     if (token[4].equals(Utils.NICKNAME)) {
                         //printa a mensagem
-                        System.out.println(receivedMessage);
+                        System.out.println(token[2] + ": " + msg[1]);
                     } else {
                         System.out.println("Wrong User");
                     }
